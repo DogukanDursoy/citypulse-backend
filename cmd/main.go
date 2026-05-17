@@ -111,6 +111,8 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 func getComplaintsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	if r.Method != http.MethodGet {
 		http.Error(w, "Sadece GET metodu desteklenir", http.StatusMethodNotAllowed)
