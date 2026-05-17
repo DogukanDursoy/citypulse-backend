@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -143,8 +144,10 @@ func getComplaintsHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// Ortam değişkenlerini yükle ve HATA VARSA SÖYLE
-	if err := godotenv.Load(".env"); err != nil {
-		fmt.Println("🔴 UYARI: .env dosyası bulunamadı veya okunamadı! Hata:", err)
+	err := godotenv.Load()
+	if err != nil {
+		// log.Fatal YERİNE fmt.Println KULLANIYORUZ Kİ SUNUCU ÇÖKMESİN!
+		fmt.Println("Uyarı: .env dosyası bulunamadı. Bulut ortam değişkenleri kullanılacak.")
 	}
 
 	repository.ConnectDB()
@@ -154,9 +157,13 @@ func main() {
 	http.HandleFunc("/api/complaints", getComplaintsHandler)
 
 	// Sunucuyu başlat
-	port := "8080"
-	fmt.Printf("CityPulse API ayağa kalktı! (Port: %s)\n", port)
-	fmt.Println("Dinleniyor: http://localhost:8080/api/analyze")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
+	fmt.Printf("🚀 CityPulse API ayağa kalktı! (Port: %s)\n", port)
+
+	// log.Fatal, sunucu çökerse hatayı yazdırıp programı kapatır (En güvenlisi)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
