@@ -17,6 +17,9 @@ func SendComplaintEmail(toEmail, complaintText, category, department, priority s
 	smtpHost := os.Getenv("SMTP_HOST") // örn: smtp.gmail.com
 	smtpPort := os.Getenv("SMTP_PORT") // örn: 587
 
+	fmt.Printf("🔍 [ADIM 2] ENV Kontrolü -> USER len: %d, PASS len: %d, HOST: %s, PORT: %s\n", 
+		len(smtpUser), len(smtpPass), smtpHost, smtpPort)
+
 	// Eğer mail adresi girilmediyse veya konfigürasyon eksikse sistemi patlatma, log bas geç
 	if toEmail == "" || smtpUser == "" || smtpPass == "" {
 		fmt.Println("⚠️ Uyarı: Alıcı e-postası veya SMTP ayarları eksik. E-posta gönderimi pas geçildi.")
@@ -77,10 +80,12 @@ func SendComplaintEmail(toEmail, complaintText, category, department, priority s
 	msg := []byte(subject + mime + body)
 
 	// SMTP Authentication ayarı
+	fmt.Println("⏳ [ADIM 3] Google SMTP sunucusuna yetkilendirme (Auth) isteği atılıyor...")
 	auth := smtp.PlainAuth("", smtpUser, smtpPass, smtpHost)
 	addr := fmt.Sprintf("%s:%s", smtpHost, smtpPort)
 
 	// Maili fırlat
+	fmt.Println("⏳ [ADIM 4] SendMail fonksiyonu çalıştırılıyor (Bu adımda takılabiliriz)...")
 	err := smtp.SendMail(addr, auth, smtpUser, to, msg)
 	if err != nil {
 		fmt.Println("🔴 E-posta Gönderilirken Hata Oluştu:", err)

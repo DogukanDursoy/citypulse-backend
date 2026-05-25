@@ -121,8 +121,13 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 	if targetEmail == "" {
 		targetEmail = "dursoydogukan@gmail.com" // Testlerin için kendi gerçek mailini yazabilirsin aga
 	}
+	fmt.Println("--- MAİL SÜRECİ BAŞLIYOR ---")
 	notification.SendComplaintEmail(targetEmail, req.Text, category, department, priority)
+	fmt.Println("--- MAİL SÜRECİ BİTTİ ---")
 	// --------------------------------------------------------------------
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(ResponseBody{Analysis: analysis})
 }
 
 func getComplaintsHandler(w http.ResponseWriter, r *http.Request) {
