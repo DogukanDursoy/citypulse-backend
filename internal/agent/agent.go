@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -32,8 +33,15 @@ func AnalyzeComplaint(text string, imageBase64 string) (string, error) {
 
 	// YENİ: Prompt'u Yapay Zekaya fotoğrafı da analiz etmesi gerektiğini söyleyecek şekilde güncelledik
 	// YENİ: Yapay zekaya "Metin yoksa fotoğrafa bak" komutu eklenmiş prompt
-	promptText := fmt.Sprintf("Sen uzman bir belediye hasar tespit yapay zekasısın. Vatandaş sana bir şikayet metni ve/veya bir fotoğraf gönderdi. Şikayet metni: '%s'. DİKKAT: Eğer şikayet metni boş veya anlamsızsa, KESİNLİKLE sadece fotoğraftaki duruma (örneğin: taşan çöp, bozuk yol, patlak lamba) odaklan ve sorunu görselden tespit et. Gördüğün manzaraya göre analizini yap. Yanıt formatın KESİNLİKLE ve SADECE şu olsun: Kategori: [İsim], Öncelik: [Seviye], Birim: [Birim]", text)
-	// YENİ: "Parts" (Parçalar) dizisini dinamik oluşturuyoruz
+// YENİ VE KUSURSUZ PROMPT MANTIĞI
+	var promptText string
+	if text == "" || strings.TrimSpace(text) == "" {
+		// Vatandaş sadece fotoğraf attıysa Gemini'ye net talimat:
+		promptText = "Sen uzman bir belediye yapay zekasısın. Vatandaş bir şikayet yazısı yazmadı, SADECE FOTOĞRAF GÖNDERDİ! Gözlerini aç ve bu fotoğraftaki problemi (çöp dağları, çukur, arıza vb.) tespit et. Yanıt formatın KESİNLİKLE sadece şu olsun: Kategori: [İsim], Öncelik: [Seviye], Birim: [Birim]"
+	} else {
+		// Hem yazı hem fotoğraf varsa:
+		promptText = fmt.Sprintf("Sen uzman bir belediye yapay zekasısın. Vatandaşın şikayet metni: '%s'. Görsel gönderildiyse görseli de detaylıca incele. Yanıt formatın KESİNLİKLE sadece şu olsun: Kategori: [İsim], Öncelik: [Seviye], Birim: [Birim]", text)
+	}	// YENİ: "Parts" (Parçalar) dizisini dinamik oluşturuyoruz
 	var parts []interface{}
 
 	// 1. Parça: Her zaman metni ekle
