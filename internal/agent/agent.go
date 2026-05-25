@@ -44,9 +44,9 @@ func AnalyzeComplaint(text string, imageBase64 string) (string, error) {
 	// 2. Parça: Eğer Flutter'dan fotoğraf geldiyse, onu da pakete ekle (Gemini'nin Gözleri açılıyor)
 	if imageBase64 != "" {
 		parts = append(parts, map[string]interface{}{
-			"inline_data": map[string]string{
-				"mime_type": "image/jpeg", // Standart resim formatı
-				"data":      imageBase64,
+			"inlineData": map[string]string{
+				"mimeType": "image/jpeg", // Standart resim formatı
+				"data":     imageBase64,
 			},
 		})
 	}
