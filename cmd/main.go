@@ -17,9 +17,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// Dışarıdan (Flutter'dan) gelecek verinin formatı
+// YENİ: Dışarıdan (Flutter'dan) gelecek verinin formatına 'Image' eklendi
 type RequestBody struct {
-	Text string `json:"text"`
+	Text  string `json:"text"`
+	Image string `json:"image"` // Flutter'dan gelen Base64 görsel verisi
 }
 
 // Dışarıya (Flutter'a) döneceğimiz verinin formatı
@@ -54,9 +55,13 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("--- Yeni Şikayet Geldi ---")
 	fmt.Println("Metin:", req.Text)
+	if req.Image != "" {
+		fmt.Println("📷 Fotoğraf eklentisi algılandı! (Base64 formatında)")
+	}
 
 	// 3. Agent'ı (Gemini'yi) çağır
-	analysis, err := agent.AnalyzeComplaint(req.Text)
+	// YENİ: Artık fonksiyona hem metni (Text) hem de fotoğrafı (Image) yolluyoruz!
+	analysis, err := agent.AnalyzeComplaint(req.Text, req.Image)
 
 	if err != nil {
 		fmt.Println("🔴 GEMINI PATLADI! Sebep:", err)
@@ -91,6 +96,7 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 		Department: department,
 		Status:     "Beklemede",
 		CreatedAt:  time.Now(),
+		// ImageBase64: req.Image, -> İleride bunu repository'e ekleyebiliriz!
 	}
 
 	// MongoDB'ye fırlat
@@ -148,7 +154,6 @@ func main() {
 	// Ortam değişkenlerini yükle ve HATA VARSA SÖYLE
 	err := godotenv.Load()
 	if err != nil {
-		// log.Fatal YERİNE fmt.Println KULLANIYORUZ Kİ SUNUCU ÇÖKMESİN!
 		fmt.Println("Uyarı: .env dosyası bulunamadı. Bulut ortam değişkenleri kullanılacak.")
 	}
 
@@ -166,6 +171,5 @@ func main() {
 
 	fmt.Printf("🚀 CityPulse API ayağa kalktı! (Port: %s)\n", port)
 
-	// log.Fatal, sunucu çökerse hatayı yazdırıp programı kapatır (En güvenlisi)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
