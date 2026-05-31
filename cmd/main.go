@@ -176,6 +176,7 @@ func main() {
 	http.HandleFunc("/api/complaints", getComplaintsHandler)
 	http.HandleFunc("/api/stats", handlers.GetStats)
 	http.HandleFunc("/api/export", handlers.ExportComplaintsCSV)
+	http.HandleFunc("/api/login", handlers.LoginHandler)
 
 	// Sunucuyu başlat
 	port := os.Getenv("PORT")
