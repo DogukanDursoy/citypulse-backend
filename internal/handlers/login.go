@@ -1,3 +1,10 @@
+package handlers
+
+import (
+	"net/http"
+	"os"
+)
+
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	adminPass := os.Getenv("ADMIN_PASSWORD")
 
