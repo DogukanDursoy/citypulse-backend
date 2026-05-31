@@ -1,13 +1,17 @@
-package handlers
-
-import (
-	"net/http"
-)
-
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	adminPass := os.Getenv("ADMIN_PASSWORD")
+
+	// Eğer env boşsa, girişi direkt reddet!
+	// Böylece kodda şifre olması imkansız hale gelir.
+	if adminPass == "" {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Sunucu hatasi: Admin sifresi tanimlanmamis."))
+		return
+	}
+
 	password := r.URL.Query().Get("password")
-	// Burada admin şifresini kontrol et
-	if password == "123456" { // Ya da os.Getenv("ADMIN_PASSWORD")
+
+	if password == adminPass {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Giris basarili"))
 	} else {
