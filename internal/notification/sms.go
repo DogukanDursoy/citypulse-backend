@@ -26,7 +26,7 @@ func SendSMS(toPhone, category, priority string) {
 	urlStr := "https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json"
 
 	// SMS İçeriği (Türkçe karakter kullanmamak SMS'te her zaman daha garantidir)
-	bodyText := fmt.Sprintf("CityPulse test onayi. Sistem aktif.")
+	bodyText := fmt.Sprintf("CityPulse: Talebiniz (%s - Oncelik: %s) sisteme kaydedildi. Ekiplerimiz yonlendiriliyor.", category, priority)
 
 	// API'ye gidecek verileri paketliyoruz
 	msgData := url.Values{}
