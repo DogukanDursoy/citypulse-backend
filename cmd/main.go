@@ -3,6 +3,7 @@ package main
 import (
 	"backendGo/internal/agent"
 	"backendGo/internal/repository"
+	"backendGo/internal/notification"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -109,6 +110,14 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// --------------------------------------------------------------
 
+	targetPhone := req.Phone
+		if targetPhone == "" {
+			// TEST İÇİN BURAYA KENDİ NUMARANI YAZ (Örn: +905551234567 formatında)
+			// Not: Ücretsiz Twilio hesabında sadece onayladığın numaralara SMS atabilirsin!
+			targetPhone = "+905426927882"
+		}
+
+		go notification.SendSMS(targetPhone, category, priority)
 	// 4. Başarılı sonucu Flutter'a gönder
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
