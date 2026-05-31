@@ -15,9 +15,9 @@ func main() {
 	fmt.Println("CityPulse Agent Test Sistemi")
 	fmt.Println("----------------------------")
 
-	şikayet := "Yollarda çok fazla çukur var, arabamın lastiği patladı."
+	sikayet := "Yollarda çok fazla çukur var, arabamın lastiği patladı."
 	
-	sonuç, err := agent.AnalyzeComplaint(şikayet)
+	sonuç, err := agent.AnalyzeComplaint(sikayet)
 	if err != nil {
 		log.Fatal(err)
 	}
