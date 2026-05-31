@@ -2,7 +2,6 @@ package main
 
 import (
 	"backendGo/internal/agent"
-	"backendGo/internal/notification"
 	"backendGo/internal/repository"
 	"context"
 	"encoding/json"
@@ -21,8 +20,8 @@ import (
 // YENİ: Dışarıdan (Flutter'dan) gelecek verinin formatına 'Image' eklendi
 type RequestBody struct {
 	Text  string `json:"text"`
-	Email string `json:"email"`
-	Image string `json:"image"` // Flutter'dan gelen Base64 görsel verisi
+	Image string `json:"image"`
+	Phone string `json:"phone"` // Flutter'dan gelen Base64 görsel verisi
 }
 
 // Dışarıya (Flutter'a) döneceğimiz verinin formatı
@@ -115,19 +114,6 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(ResponseBody{Analysis: analysis})
 
-	// ------------------ YENİ: ASENKRON BİLDİRİM MOTORU ------------------
-	// Eğer Flutter'dan mail gelmediyse test etmek için kendi mail adresini de buraya default yazabilirsin.
-	targetEmail := req.Email
-	if targetEmail == "" {
-		targetEmail = "dursoydogukan@gmail.com" // Testlerin için kendi gerçek mailini yazabilirsin aga
-	}
-	fmt.Println("--- MAİL SÜRECİ BAŞLIYOR ---")
-	notification.SendComplaintEmail(targetEmail, req.Text, category, department, priority)
-	fmt.Println("--- MAİL SÜRECİ BİTTİ ---")
-	// --------------------------------------------------------------------
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(ResponseBody{Analysis: analysis})
 }
 
 func getComplaintsHandler(w http.ResponseWriter, r *http.Request) {
