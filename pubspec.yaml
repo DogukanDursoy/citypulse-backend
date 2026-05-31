@@ -1,0 +1,30 @@
+name: city_pulse_app
+description: "A new Flutter project for CityPulse."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  http: ^1.6.0
+  flutter_native_splash: ^2.4.7
+  image_picker: ^1.2.2
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter_native_splash:
+  color: "#009688" # Bizim Teal renginin tam Hex kodu
+  android_12:
+    color: "#009688"
+
+flutter:
+  uses-material-design: true
