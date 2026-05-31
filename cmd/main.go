@@ -12,7 +12,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
 	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/joho/godotenv"

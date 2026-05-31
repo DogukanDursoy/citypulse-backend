@@ -2,6 +2,7 @@ package notification
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -57,6 +58,7 @@ func SendSMS(toPhone, category, priority string) {
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		fmt.Println("🟢 [BAŞARI] SMS vatandaşa başarıyla uçuruldu!")
 	} else {
-		fmt.Println("🔴 [HATA] Twilio'dan hata döndü, HTTP Kodu:", resp.StatusCode)
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		fmt.Printf("🔴 [HATA] Twilio'dan 400 yedik! Sebebi: %s\n", string(bodyBytes))
 	}
 }
