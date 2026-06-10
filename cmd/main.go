@@ -91,26 +91,36 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Şikayet modelini oluştur
+	// 1. Önce kodu üretelim
+	trackingCode := handlers.GenerateTrackingCode()
+
+	// 2. Şikayet modelini oluştur
 	newComplaint := repository.Complaint{
-		UserText:   req.Text,
-		Category:   category,
-		Priority:   priority,
-		Department: department,
-		Status:     "Beklemede",
-		CreatedAt:  time.Now(),
+		UserText:     req.Text,
+		Category:     category,
+		Priority:     priority,
+		Department:   department,
+		Status:       "Beklemede",
+		TrackingCode: trackingCode, // YENİ EKLENDİ
+		CreatedAt:    time.Now(),
 		// ImageBase64: req.Image, -> İleride bunu repository'e ekleyebiliriz!
 	}
 
-	// MongoDB'ye fırlat
+	// 3. MongoDB'ye fırlat
 	_, dbErr := repository.ComplaintCollection.InsertOne(context.TODO(), newComplaint)
 	if dbErr != nil {
 		fmt.Println("🔴 MongoDB Kayıt Hatası:", dbErr)
+		// İstersen burada http.Error da dönebilirsin
 	} else {
-		fmt.Println("🟢 Şikayet MongoDB Atlas'a başarıyla kaydedildi!")
-	}
-	// --------------------------------------------------------------
+		fmt.Println("🟢 Şikayet MongoDB Atlas'a başarıyla kaydedildi! Kod:", trackingCode)
 
+		// 4. SMS ATMA (Jürinin Vurulacağı Yer)
+		smsMesaji := " Takip kodunuz: " + trackingCode
+
+		// AGA BURAYA KENDİ SMS FONKSİYONUNU YAZACAKSIN
+		// Örnek:
+		// sendSMS("+905551234567", smsMesaji)
+	
 	targetPhone := req.Phone
 	if targetPhone == "" {
 		// TEST İÇİN BURAYA KENDİ NUMARANI YAZ (Örn: +905551234567 formatında)
@@ -118,7 +128,9 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 		targetPhone = "+905426927882"
 	}
 
-	go notification.SendSMS(targetPhone, category, priority)
+	go notification.SendSMS(targetPhone, smsMesaji)
+}
+
 	// 4. Başarılı sonucu Flutter'a gönder
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

@@ -7,10 +7,21 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+	"math/rand"
 	"go.mongodb.org/mongo-driver/bson"
 	"backendGo/internal/models"
 	"backendGo/internal/repository"
 )
+
+func GenerateTrackingCode() string {
+    rand.Seed(time.Now().UnixNano())
+    chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+    b := make([]rune, 5)
+    for i := range b {
+        b[i] = chars[rand.Intn(len(chars))]
+    }
+    return "CP-" + string(b)
+}
 
 // 1. Dışa Aktarma (Excel/CSV) Endpoint'i
 func ExportComplaintsCSV(w http.ResponseWriter, r *http.Request) {
