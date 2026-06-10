@@ -24,9 +24,11 @@ import (
 
 // YENİ: Dışarıdan (Flutter'dan) gelecek verinin formatına 'Image' eklendi
 type RequestBody struct {
-	Text  string `json:"text"`
-	Image string `json:"image"`
-	Phone string `json:"phone"` // Flutter'dan gelen Base64 görsel verisi
+	Text  string  `json:"text"`
+	Image string  `json:"image"`
+	Phone string  `json:"phone"`
+	Lat   float64 `json:"lat"`
+	Lng   float64 `json:"lng"`
 }
 
 // Dışarıya (Flutter'a) döneceğimiz verinin formatı
@@ -104,9 +106,10 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 		Priority:     priority,
 		Department:   department,
 		Status:       "Beklemede",
-		TrackingCode: trackingCode, // YENİ EKLENDİ
+		TrackingCode: trackingCode,
 		CreatedAt:    time.Now(),
-		// ImageBase64: req.Image, -> İleride bunu repository'e ekleyebiliriz!
+		Lat:          req.Lat, // EKLE
+		Lng:          req.Lng, // EKLE
 	}
 
 	// 3. MongoDB'ye fırlat
