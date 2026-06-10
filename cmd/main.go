@@ -3,6 +3,7 @@ package main
 import (
 	"backendGo/internal/agent"
 	"backendGo/internal/handlers"
+	"backendGo/internal/models"
 	"backendGo/internal/notification"
 	"backendGo/internal/repository"
 	"context"
@@ -95,7 +96,7 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 	trackingCode := handlers.GenerateTrackingCode()
 
 	// 2. Şikayet modelini oluştur
-	newComplaint := repository.Complaint{
+	newComplaint := models.Complaint{
 		UserText:     req.Text,
 		Category:     category,
 		Priority:     priority,
@@ -149,7 +150,7 @@ func getComplaintsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var complaints []repository.Complaint
+	var complaints []models.Complaint
 
 	// Veri tabanından tüm şikayetleri çek (bson.M{} boş filtre demek, yani hepsini getir)
 	cursor, err := repository.ComplaintCollection.Find(context.TODO(), bson.M{})
@@ -167,7 +168,7 @@ func getComplaintsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Eğer liste boşsa, null yerine boş dizi [] dönsün (Flutter'da hata çıkmasın diye)
 	if complaints == nil {
-		complaints = []repository.Complaint{}
+		complaints = []models.Complaint{}
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -186,6 +187,7 @@ func main() {
 	// Endpoint'i tanımla
 	http.HandleFunc("/api/analyze", analyzeHandler)
 	http.HandleFunc("/api/complaints", getComplaintsHandler)
+	http.HandleFunc("/api/complaints/track", handlers.TrackComplaint)
 	http.HandleFunc("/api/stats", handlers.GetStats)
 	http.HandleFunc("/api/export", handlers.ExportComplaintsCSV)
 	http.HandleFunc("/api/login", handlers.LoginHandler)

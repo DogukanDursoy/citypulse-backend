@@ -1,17 +1,22 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"time"
 
-// Complaint, sistemdeki şikayetlerin ana veri modelidir
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+// Complaint, sistemdeki şikayetlerin tek ve ana veri modelidir
 type Complaint struct {
 	ID           primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
-	Text         string             `json:"text" bson:"text"`
-	Image        string             `json:"image,omitempty" bson:"image,omitempty"` // Base64 formatlı fotoğraf
+	UserText     string             `json:"user_text" bson:"user_text"`
 	Category     string             `json:"category" bson:"category"`
 	Priority     string             `json:"priority" bson:"priority"`
 	Department   string             `json:"department" bson:"department"`
-	Status       string             `json:"status" bson:"status"`               // Örn: "Pending", "Resolved"
-	TrackingCode string             `json:"tracking_code" bson:"tracking_code"` // YENİ: Vatandaşın takip kodu
-	Lat          float64            `json:"lat" bson:"lat"`                     // GPS Enlem
-	Lng          float64            `json:"lng" bson:"lng"`                     // GPS Boylam
+	Status       string             `json:"status" bson:"status"`
+	TrackingCode string             `json:"tracking_code" bson:"tracking_code"`
+	Image        string             `json:"image,omitempty" bson:"image,omitempty"`
+	Lat          float64            `json:"lat" bson:"lat"`
+	Lng          float64            `json:"lng" bson:"lng"`
+	CreatedAt    time.Time          `json:"created_at" bson:"created_at"`
 }

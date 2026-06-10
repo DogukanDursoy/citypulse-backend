@@ -5,22 +5,24 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"time"
-	"math/rand"
-	"go.mongodb.org/mongo-driver/bson"
+
 	"backendGo/internal/models"
 	"backendGo/internal/repository"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func GenerateTrackingCode() string {
-    rand.Seed(time.Now().UnixNano())
-    chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-    b := make([]rune, 5)
-    for i := range b {
-        b[i] = chars[rand.Intn(len(chars))]
-    }
-    return "CP-" + string(b)
+	rand.Seed(time.Now().UnixNano())
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	b := make([]rune, 5)
+	for i := range b {
+		b[i] = chars[rand.Intn(len(chars))]
+	}
+	return "CP-" + string(b)
 }
 
 // 1. Dışa Aktarma (Excel/CSV) Endpoint'i
@@ -54,7 +56,7 @@ func ExportComplaintsCSV(w http.ResponseWriter, r *http.Request) {
 				complaint.Status,
 				complaint.Priority,
 				complaint.Department,
-				complaint.Text,
+				complaint.UserText,
 			}
 			writer.Write(row)
 		}
@@ -77,7 +79,39 @@ func GetStats(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// 3. Şikayetleri Listeleme ve Filtreleme Endpoint'i
+// 4. Takip Kodu Sorgulama Endpoint'i
+func TrackComplaint(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Sadece GET metodu desteklenir", http.StatusMethodNotAllowed)
+		return
+	}
+
+	code := r.URL.Query().Get("code")
+	if code == "" {
+		http.Error(w, "Takip kodu eksik", http.StatusBadRequest)
+		return
+	}
+
+	var complaint models.Complaint
+	err := repository.ComplaintCollection.FindOne(context.TODO(), bson.M{"tracking_code": code}).Decode(&complaint)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Bu takip koduna ait şikayet bulunamadı."})
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"tracking_code": complaint.TrackingCode,
+		"status":        complaint.Status,
+		"category":      complaint.Category,
+		"priority":      complaint.Priority,
+		"department":    complaint.Department,
+	})
+}
 func GetComplaints(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

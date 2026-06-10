@@ -14,18 +14,6 @@ import (
 var MongoClient *mongo.Client
 var ComplaintCollection *mongo.Collection
 
-// Şikayet Modeli
-type Complaint struct {
-	ID           string    `bson:"_id,omitempty" json:"id"`
-	UserText     string    `bson:"user_text" json:"user_text"`
-	Category     string    `bson:"category" json:"category"`
-	Priority     string    `bson:"priority" json:"priority"`
-	Department   string    `bson:"department" json:"department"`
-	Status       string    `bson:"status" json:"status"`               // "Beklemede", "İşlemde", "Çözüldü"
-	TrackingCode string    `json:"tracking_code" bson:"tracking_code"` // YENİ: Vatandaşın takip kodu
-	CreatedAt    time.Time `bson:"created_at" json:"created_at"`
-}
-
 // MongoDB Atlas'a bağlanan fonksiyon
 func ConnectDB() {
 	mongoURI := os.Getenv("MONGO_URI")
