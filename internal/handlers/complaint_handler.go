@@ -12,7 +12,7 @@ import (
 
 	"backendGo/internal/models"
 	"backendGo/internal/repository"
-
+	"go.mongodb.org/mongo-driver/mongo/options" 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -91,7 +91,9 @@ func GetComplaints(w http.ResponseWriter, r *http.Request) {
 		filter["category"] = category
 	}
 
-	cursor, err := repository.ComplaintCollection.Find(context.TODO(), filter)
+	opts := options.Find().SetSort(bson.D{{Key: "created_at", Value: -1}}) // en yeni önce
+	cursor, err := repository.ComplaintCollection.Find(context.TODO(), filter, opts)
+
 	if err != nil {
 		http.Error(w, "Veri çekilemedi", http.StatusInternalServerError)
 		return
