@@ -115,7 +115,7 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("🟢 Şikayet MongoDB Atlas'a başarıyla kaydedildi! Kod:", trackingCode)
 
 		// 4. SMS ATMA (Jürinin Vurulacağı Yer)
-		smsMesaji := " Şikayetiniz kaydedildi - Takip kodunuz: " + trackingCode
+		smsMesaji := "Sikayetiniz kaydedildi - Takip kodunuz: " + trackingCode
 
 		// AGA BURAYA KENDİ SMS FONKSİYONUNU YAZACAKSIN
 		// Örnek:
