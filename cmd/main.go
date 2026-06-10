@@ -188,6 +188,7 @@ func main() {
 	http.HandleFunc("/api/analyze", analyzeHandler)
 	http.HandleFunc("/api/complaints", getComplaintsHandler)
 	http.HandleFunc("/api/complaints/track", handlers.TrackComplaint)
+	http.HandleFunc("/api/complaints/", handlers.UpdateComplaintStatus) // PATCH /{id}/status
 	http.HandleFunc("/api/stats", handlers.GetStats)
 	http.HandleFunc("/api/export", handlers.ExportComplaintsCSV)
 	http.HandleFunc("/api/login", handlers.LoginHandler)
