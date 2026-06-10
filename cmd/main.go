@@ -115,21 +115,21 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("🟢 Şikayet MongoDB Atlas'a başarıyla kaydedildi! Kod:", trackingCode)
 
 		// 4. SMS ATMA (Jürinin Vurulacağı Yer)
-		smsMesaji := " Takip kodunuz: " + trackingCode
+		smsMesaji := " Şikayetiniz kaydedildi - Takip kodunuz: " + trackingCode
 
 		// AGA BURAYA KENDİ SMS FONKSİYONUNU YAZACAKSIN
 		// Örnek:
 		// sendSMS("+905551234567", smsMesaji)
-	
-	targetPhone := req.Phone
-	if targetPhone == "" {
-		// TEST İÇİN BURAYA KENDİ NUMARANI YAZ (Örn: +905551234567 formatında)
-		// Not: Ücretsiz Twilio hesabında sadece onayladığın numaralara SMS atabilirsin!
-		targetPhone = "+905426927882"
-	}
 
-	go notification.SendSMS(targetPhone, smsMesaji)
-}
+		targetPhone := req.Phone
+		if targetPhone == "" {
+			// TEST İÇİN BURAYA KENDİ NUMARANI YAZ (Örn: +905551234567 formatında)
+			// Not: Ücretsiz Twilio hesabında sadece onayladığın numaralara SMS atabilirsin!
+			targetPhone = "+905426927882"
+		}
+
+		go notification.SendSMS(targetPhone, smsMesaji)
+	}
 
 	// 4. Başarılı sonucu Flutter'a gönder
 	w.Header().Set("Content-Type", "application/json")

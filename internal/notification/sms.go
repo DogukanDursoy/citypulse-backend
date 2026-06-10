@@ -26,14 +26,11 @@ func SendSMS(toPhone, messageBody string) {
 	urlStr := "https://api.twilio.com/2010-04-01/Accounts/" + accountSid + "/Messages.json"
 
 	// SMS İçeriği (Türkçe karakter kullanmamak SMS'te her zaman daha garantidir)
-	bodyText := fmt.Sprintf("CityPulse: Talebiniz sisteme kaydedildi. %s", messageBody)
-
 	// API'ye gidecek verileri paketliyoruz
 	msgData := url.Values{}
 	msgData.Set("To", toPhone)
 	msgData.Set("From", fromPhone)
-	msgData.Set("Body", bodyText)
-
+	msgData.Set("Body", messageBody)
 	req, err := http.NewRequest("POST", urlStr, strings.NewReader(msgData.Encode()))
 	if err != nil {
 		fmt.Println("🔴 [HATA] İstek oluşturulamadı:", err)
