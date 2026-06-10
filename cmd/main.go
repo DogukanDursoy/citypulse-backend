@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"go.mongodb.org/mongo-driver/mongo/options"
+
 	"go.mongodb.org/mongo-driver/bson"
 
 	"github.com/joho/godotenv"
@@ -153,7 +155,8 @@ func getComplaintsHandler(w http.ResponseWriter, r *http.Request) {
 	var complaints []models.Complaint
 
 	// Veri tabanından tüm şikayetleri çek (bson.M{} boş filtre demek, yani hepsini getir)
-	cursor, err := repository.ComplaintCollection.Find(context.TODO(), bson.M{})
+	opts := options.Find().SetSort(bson.D{{Key: "created_at", Value: -1}})
+	cursor, err := repository.ComplaintCollection.Find(context.TODO(), bson.M{}, opts)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
