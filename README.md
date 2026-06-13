@@ -4,7 +4,7 @@ CityPulse, vatandaşların belediyeye şikayet iletmesini ve yöneticilerin bu �
 
 ## 🎬 Demo
 
-[![CityPulse Demo](https://img.youtube.com/vi/DBxWszMi3xg/0.jpg)](https://www.youtube.com/watch?v=DBxWszMi3xg)
+[![CityPulse Demo]](https://www.youtube.com/watch?v=DBxWszMi3xg)
 
 ---
 
