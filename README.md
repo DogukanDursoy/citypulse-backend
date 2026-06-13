@@ -2,6 +2,10 @@
 
 CityPulse, vatandaşların belediyeye şikayet iletmesini ve yöneticilerin bu şikayetleri takip edip yönetmesini sağlayan yapay zeka destekli bir mobil + backend uygulamasıdır.
 
+## 🎬 Demo
+
+[![CityPulse Demo](https://img.youtube.com/vi/DBxWszMi3xg/0.jpg)](https://www.youtube.com/watch?v=DBxWszMi3xg)
+
 ---
 
 ## Özellikler
